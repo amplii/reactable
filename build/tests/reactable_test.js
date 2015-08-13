@@ -610,6 +610,81 @@
             });
         });
 
+        describe('adding <CustomComponents>s to the <Table>', function () {
+            before(function () {
+                var CustomComponent = React.createClass({
+                    displayName: "CustomComponent",
+                    propTypes: {
+                        name: React.PropTypes.string,
+                        age: React.PropTypes.number,
+                        position: React.PropTypes.string
+                    },
+                    getData: function getData() {
+                        return {
+                            Name: this.props.name,
+                            Age: this.props.age,
+                            Position: this.props.position
+                        };
+                    },
+                    render: function render() {
+                        return React.createElement(
+                            Reactable.Tr,
+                            null,
+                            React.createElement(
+                                Reactable.Td,
+                                { column: 'Name' },
+                                this.props.name
+                            ),
+                            React.createElement(
+                                Reactable.Td,
+                                { column: 'Age' },
+                                this.props.age
+                            ),
+                            React.createElement(
+                                Reactable.Td,
+                                { column: 'Position' },
+                                this.props.position
+                            )
+                        );
+                    }
+                });
+                React.render(React.createElement(
+                    Reactable.Table,
+                    { className: 'table', id: 'table' },
+                    React.createElement(CustomComponent, { name: 'Griffin Smith', age: 18 }),
+                    React.createElement(CustomComponent, { name: 'Lee Salminen', age: 23 }),
+                    React.createElement(CustomComponent, { age: 28, position: 'Developer' })
+                ), ReactableTestUtils.testNode());
+            });
+
+            after(ReactableTestUtils.resetTestEnvironment);
+
+            it('renders the table', function () {
+                expect($('table#table.table')).to.exist;
+            });
+
+            it('renders the column headers in the table', function () {
+                var headers = [];
+                $('thead th').each(function () {
+                    headers.push($(this).text());
+                });
+
+                expect(headers).to.eql(['Name', 'Age', 'Position']);
+            });
+
+            it('renders the first row with the correct data', function () {
+                ReactableTestUtils.expectRowText(0, ['Griffin Smith', '18', '']);
+            });
+
+            it('renders the second row with the correct data', function () {
+                ReactableTestUtils.expectRowText(1, ['Lee Salminen', '23', '']);
+            });
+
+            it('renders the third row with the correct data', function () {
+                ReactableTestUtils.expectRowText(2, ['', '28', 'Developer']);
+            });
+        });
+
         describe('passing through HTML props', function () {
             describe('adding <Tr>s with className to the <Table>', function () {
                 before(function () {
@@ -1582,7 +1657,7 @@
 
         describe('filtering', function () {
             describe('filtering with javascript objects for data', function () {
-                var data = [{ name: 'Lee SomeoneElse', age: 18 }, { name: 'Lee Salminen', age: 23 }, { name: 'No Age', age: null }];
+                var data = [{ name: "Lee SomeoneElse", age: 18 }, { name: "Lee Salminen", age: 23 }, { name: "No Age", age: null }];
                 before(function () {
                     React.render(React.createElement(
                         Reactable.Table,
@@ -1725,7 +1800,7 @@
 
                     it('filter placeholder is set', function () {
                         var $filter = $('#table thead tr.reactable-filterer input.reactable-filter-input');
-                        expect($filter.attr('placeholder')).to.equal('Filter Results');
+                        expect($filter.attr("placeholder")).to.equal('Filter Results');
                     });
                 });
 
@@ -1784,7 +1859,7 @@
                     $filter.val('colorado');
                     React.addons.TestUtils.Simulate.keyUp($filter[0]);
 
-                    ReactableTestUtils.expectRowText(0, ['Colorado', 'new description that shouldn\'t match filter', 'old']);
+                    ReactableTestUtils.expectRowText(0, ['Colorado', "new description that shouldn't match filter", 'old']);
                     var activePage = $('#table tbody.reactable-pagination ' + 'a.reactable-page-button.reactable-current-page');
                     expect(activePage.length).to.equal(1);
                     expect(activePage).to.have.text('1');

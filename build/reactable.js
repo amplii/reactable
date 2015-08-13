@@ -217,16 +217,16 @@
 
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
     var FiltererInput = (function (_React$Component) {
+        _inherits(FiltererInput, _React$Component);
+
         function FiltererInput() {
             _classCallCheck(this, FiltererInput);
 
             _get(Object.getPrototypeOf(FiltererInput.prototype), "constructor", this).apply(this, arguments);
         }
-
-        _inherits(FiltererInput, _React$Component);
 
         _createClass(FiltererInput, [{
             key: "onChange",
@@ -252,19 +252,19 @@
     ;
 
     var Filterer = (function (_React$Component2) {
+        _inherits(Filterer, _React$Component2);
+
         function Filterer() {
             _classCallCheck(this, Filterer);
 
             _get(Object.getPrototypeOf(Filterer.prototype), "constructor", this).apply(this, arguments);
         }
 
-        _inherits(Filterer, _React$Component2);
-
         _createClass(Filterer, [{
             key: "render",
             value: function render() {
-                if (typeof this.props.colSpan === "undefined") {
-                    throw new TypeError("Must pass a colSpan argument to Filterer");
+                if (typeof this.props.colSpan === 'undefined') {
+                    throw new TypeError('Must pass a colSpan argument to Filterer');
                 }
 
                 return React.createElement(
@@ -717,16 +717,16 @@
 
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+    function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
     var Tfoot = (function (_React$Component) {
+        _inherits(Tfoot, _React$Component);
+
         function Tfoot() {
             _classCallCheck(this, Tfoot);
 
             _get(Object.getPrototypeOf(Tfoot.prototype), "constructor", this).apply(this, arguments);
         }
-
-        _inherits(Tfoot, _React$Component);
 
         _createClass(Tfoot, [{
             key: "render",
@@ -783,9 +783,9 @@
                 var pageButtons = [];
                 for (var i = 0; i < this.props.numPages; i++) {
                     var pageNum = i;
-                    var className = 'reactable-page-button';
+                    var className = "reactable-page-button";
                     if (this.props.currentPage === i) {
-                        className += ' reactable-current-page';
+                        className += " reactable-current-page";
                     }
 
                     pageButtons.push(React.createElement(
@@ -847,15 +847,18 @@
 
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-    function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+    function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
     var Table = (function (_React$Component) {
+        _inherits(Table, _React$Component);
+
         function Table(props) {
             _classCallCheck(this, Table);
 
             _get(Object.getPrototypeOf(Table.prototype), 'constructor', this).call(this, props);
 
             this.state = {
+                parsedCustomComponents: false,
                 currentPage: 0,
                 currentSort: {
                     column: null,
@@ -871,18 +874,16 @@
             }
         }
 
-        _inherits(Table, _React$Component);
-
         _createClass(Table, [{
             key: 'filterBy',
             value: function filterBy(filter) {
                 this.setState({ filter: filter });
             }
-        }, {
-            key: 'translateColumnsArray',
 
             // Translate a user defined column array to hold column objects if strings are specified
             // (e.g. ['column1'] => [{key: 'column1', label: 'column1'}])
+        }, {
+            key: 'translateColumnsArray',
             value: function translateColumnsArray(columns) {
                 return columns.map((function (column, i) {
                     if (typeof column === 'string') {
@@ -904,7 +905,8 @@
             key: 'parseChildData',
             value: function parseChildData(props) {
                 var data = [],
-                    tfoot = undefined;
+                    tfoot = undefined,
+                    customComponentsCount = 0;
 
                 // Transform any children back to a data array
                 if (typeof props.children !== 'undefined') {
@@ -956,11 +958,17 @@
                                     __reactableMeta: true
                                 });
                                 break;
+                            default:
+                                // Don't know if there are other acceptable types
+                                // that should be dismissed
+                                // console.log("Table, got custom component", child.type)
+                                customComponentsCount++;
+                                break;
                         }
                     }).bind(this));
                 }
 
-                return { data: data, tfoot: tfoot };
+                return { data: data, tfoot: tfoot, customComponentsCount: customComponentsCount };
             }
         }, {
             key: 'initialize',
@@ -971,9 +979,11 @@
 
                 var data = _parseChildData.data;
                 var tfoot = _parseChildData.tfoot;
+                var customComponentsCount = _parseChildData.customComponentsCount;
 
                 this.data = this.data.concat(data);
                 this.tfoot = tfoot;
+                this.customComponentsCount = customComponentsCount;
 
                 this.initializeSorts(props);
             }
@@ -1057,6 +1067,27 @@
             value: function componentWillMount() {
                 this.initialize(this.props);
                 this.sortByCurrentSort();
+            }
+        }, {
+            key: 'componentDidMount',
+            value: function componentDidMount() {
+                for (var i = 0; i < this.customComponentsCount; i++) {
+                    var child = this.refs['child-' + i],
+                        childData = child.getData(),
+                        childDataToPush = {};
+                    for (var key in childData) {
+                        childDataToPush[key] = {
+                            value: childData[key],
+                            __reactableMeta: true
+                        };
+                    }
+                    this.data.push({
+                        data: childDataToPush,
+                        props: (0, _libFilter_props_from.filterPropsFrom)(child.props),
+                        __reactableMeta: true
+                    });
+                };
+                this.setState({ parsedCustomComponents: true });
             }
         }, {
             key: 'componentWillReceiveProps',
@@ -1149,9 +1180,28 @@
                 this.sortByCurrentSort();
             }
         }, {
+            key: 'renderUnparsedDataTable',
+            value: function renderUnparsedDataTable() {
+                // http://www.mattzabriskie.com/blog/react-referencing-dynamic-children
+                var index = 0;
+                var children = React.Children.map(this.props.children, function (child) {
+                    return React.addons.cloneWithProps(child, { ref: 'child-' + index++ });
+                });
+
+                return React.createElement(
+                    'div',
+                    null,
+                    children
+                );
+            }
+        }, {
             key: 'render',
             value: function render() {
                 var _this = this;
+
+                if (!this.state.parsedCustomComponents && this.customComponentsCount > 0) {
+                    return this.renderUnparsedDataTable();
+                }
 
                 var children = [];
                 var columns = undefined;
